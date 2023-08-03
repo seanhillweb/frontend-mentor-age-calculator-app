@@ -1,4 +1,12 @@
-import './globals.css'
+/**
+ * Summary.
+ *
+ * Description. A layout is UI that is shared between routes. 
+ *
+ * @link https://nextjs.org/docs/app/api-reference/file-conventions/layout
+ */
+
+import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
