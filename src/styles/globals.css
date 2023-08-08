@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
+  --foreground-rgb: 20, 20, 20;
+  --background-rgb: 219, 219, 219;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,69 +17,4 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
-}
-
-/* Anchors */
-a {
-  @apply text-blue-600;
-  @apply underline;
-}
-
-a:hover,
-a:focus {
-  @apply text-blue-800;
-  @apply no-underline;
-}
-
-/* Typography */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply mt-8;
-  @apply mb-4;
-}
-
-h1 {
-  @apply text-5xl
-}
-
-h2 {
-  @apply text-4xl;
-}
-
-h3 {
-  @apply text-3xl;
-}
-
-h4 {
-  @apply text-2xl;
-}
-
-h5 {
-  @apply text-xl;
-}
-
-h6 {
-  @apply text-lg;
-}
-
-p {
-  @apply my-4;
-}
-
-ul,
-ol {
-  @apply my-4;
-  @apply pl-4
-}
-
-ul {
-  @apply list-disc;
-}
-
-ol {
-  @apply list-decimal;
 }
