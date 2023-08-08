@@ -8,7 +8,7 @@
  * @link https://www.freecodecamp.org/news/how-to-build-forms-in-react/
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 
@@ -21,27 +21,22 @@ export default function Home() {
 
   const currentFullDate = `${currentDay}-${currentMonth}-${currentYear}`;
 
-  console.log(currentFullDate);
-
-  const [isDay, setDay] = useState(currentDay);
-  const [isMonth, setMonth] = useState(currentMonth);
-  const [isYear, setYear] = useState(currentYear);
-
-  const [isSubmittedDate, setSubmittedDate] = useState();
+  const [isDay, setDay] = useState();
+  const [isMonth, setMonth] = useState();
+  const [isYear, setYear] = useState();
 
   function Form() {
     const {
       register,
       handleSubmit,
+      getValues,
       formState: { errors },
     } = useForm();
 
-    const onSubmit = (data) => {
-      console.log(data);
-      // setDay(data.day);
-      // setMonth(data.month);
-      // setYear(data.year);
-      // console.log(isDay, isMonth, isYear);
+    const onSubmit = () => {
+      setDay(getValues("day"));
+      setMonth(getValues("month"));
+      setYear(getValues("year"));
     };
 
     return (
@@ -71,18 +66,33 @@ export default function Home() {
               aria-invalid={errors.day ? "true" : "false"}
               {...register("day", {
                 required: true,
-                pattern: "(0[1-9]|[12][0-9]|3[01])",
-                maxLength: 2,
+                valueAsNumber: true,
+                pattern: /^(3[01]|[12][0-9]|0?[1-9])+$/,
+                validate: {
+                  minValue: (value) => value >= 1,
+                  maxValue: (value) => value <= 31,
+                  matchPattern: (value) => /^(3[01]|[12][0-9]|0?[1-9])+$/.test(value),
+                },
               })}
             />
-            {errors.day && errors.day.type === "required" && (
+            {errors.day?.type === "required" && (
               <span role="alert" className="text-lightRed text-xs italic mt-1">
                 This field is required
               </span>
             )}
-            {errors.day > 31 || errors.day < 1 && (
+            {errors.day?.type === "minValue" && (
               <span role="alert" className="text-lightRed text-xs italic mt-1">
                 Must be a valid day
+              </span>
+            )}
+            {errors.day?.type === "maxValue" && (
+              <span role="alert" className="text-lightRed text-xs italic mt-1">
+                Must be a valid day
+              </span>
+            )}
+            {errors.day?.type === "matchPattern" && (
+              <span role="alert" className="text-lightRed text-xs italic mt-1">
+                Must be a number
               </span>
             )}
           </div>
@@ -105,18 +115,38 @@ export default function Home() {
                   : "border-lightGrey hover:border-purple focus:border-purple"
               }`}
               placeholder="MM"
+              inputMode="numeric"
               maxLength={2}
               aria-invalid={errors.month ? "true" : "false"}
               {...register("month", {
                 required: true,
-                pattern: "(0[1-9]|1[1,2])",
-                maxLength: 2,
                 valueAsNumber: true,
+                pattern: /^(1[0-2]|0?[1-9])+$/,
+                validate: {
+                  minValue: (value) => value >= 1,
+                  maxValue: (value) => value <= 12,
+                  matchPattern: (value) => /^(1[0-2]|0?[1-9])+$/.test(value),
+                },
               })}
             />
-            {errors.month && errors.month.type === "required" && (
+            {errors.month?.type === "required" && (
               <span role="alert" className="text-lightRed text-xs italic mt-1">
                 This field is required
+              </span>
+            )}
+            {errors.month?.type === "minValue" && (
+              <span role="alert" className="text-lightRed text-xs italic mt-1">
+                Must be a valid month
+              </span>
+            )}
+            {errors.month?.type === "maxValue" && (
+              <span role="alert" className="text-lightRed text-xs italic mt-1">
+                Must be a valid month
+              </span>
+            )}
+            {errors.month?.type === "matchPattern" && (
+              <span role="alert" className="text-lightRed text-xs italic mt-1">
+                Must be a valid month
               </span>
             )}
           </div>
@@ -139,20 +169,32 @@ export default function Home() {
                   : "border-lightGrey hover:border-purple focus:border-purple"
               }`}
               placeholder="YYYY"
-              minLength={4}
+              inputMode="numeric"
               maxLength={4}
               aria-invalid={errors.year ? "true" : "false"}
               {...register("year", {
                 required: true,
-                pattern: "(19|20)d{2}",
-                minLength: 4,
-                maxLength: 4,
                 valueAsNumber: true,
+                pattern: /[\d]{4}/,
+                validate: {
+                  maxValue: (value) => value <= currentYear,
+                  matchPattern: (value) => /[\d]{4}/.test(value),
+                },
               })}
             />
-            {errors.year && errors.year.type === "required" && (
+            {errors.year?.type === "required" && (
               <span role="alert" className="text-lightRed text-xs italic mt-1">
                 This field is required
+              </span>
+            )}
+            {errors.year?.type === "maxValue" && (
+              <span role="alert" className="text-lightRed text-xs italic mt-1">
+                Must be in the past
+              </span>
+            )}
+            {errors.year?.type === "matchPattern" && (
+              <span role="alert" className="text-lightRed text-xs italic mt-1">
+                Must be a valid year
               </span>
             )}
           </div>
