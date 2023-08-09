@@ -34,7 +34,7 @@ Users should be able to:
 
 ### Screenshot
 
-![](./screenshot.jpg)
+![](./screenshot.png)
 
 ### Links
 
@@ -53,27 +53,35 @@ Users should be able to:
 
 ### What I learned
 
-Use this section to recap over some of your major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
+Having seperate input fields for date management turned out to be pretty tricky for validation. My initial structure looks clean, but resulted in a lot of overhead. Using `date-fns` helped with utilities and formatting.
 
-To see how you can add code snippets, see below:
-
-```html
-<h1>Some HTML code I'm proud of</h1>
-```
-```css
-.proud-of-this-css {
-  color: papayawhip;
-}
-```
 ```js
-const proudOfThisFunc = () => {
-  console.log('🎉')
+const date = new Date();
+
+const currentDay = date.getUTCDate();
+const currentMonth = date.getUTCMonth() + 1;
+const currentYear = date.getUTCFullYear();
+
+const [isDay, setDay] = useState();
+const [isMonth, setMonth] = useState();
+const [isYear, setYear] = useState();
+
+const compareCurrentDate = date;
+let compareSubmittedDate = new Date(
+  currentYear,
+  currentMonth - 1,
+  currentDay
+);
+
+if (isYear && isMonth && isDay) {
+  compareSubmittedDate = new Date(isYear, isMonth - 1, isDay);
 }
+
+const dateDuration = intervalToDuration({
+  start: compareCurrentDate,
+  end: compareSubmittedDate,
+});
 ```
-
-If you want more help with writing markdown, we'd recommend checking out [The Markdown Guide](https://www.markdownguide.org/) to learn more.
-
-**Note: Delete this note and the content within this section and replace with your own learnings.**
 
 ### Continued development
 
@@ -81,8 +89,8 @@ For future projects, I want to explore creating a form schema, using a library l
 
 ### Useful resources
 
-- [Regex Example](https://www.freecodecamp.org/news/regex-for-date-formats-what-is-the-regular-expression-for-matching-dates/) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
-- [Validation Example](https://catalins.tech/react-forms-with-react-hook-form/) - This is an amazing article which helped me finally understand XYZ. I'd recommend it to anyone still learning this concept.
+- [Regex Example](https://www.freecodecamp.org/news/regex-for-date-formats-what-is-the-regular-expression-for-matching-dates/) - This helped structure the expected values for each input vield.
+- [Validation Example](https://catalins.tech/react-forms-with-react-hook-form/) - This helped structure the individual error messages for each input.
 
 ## Author
 
