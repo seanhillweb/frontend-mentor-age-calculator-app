@@ -10,15 +10,15 @@
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { parse, isValid, intervalToDuration } from "date-fns";
+import { intervalToDuration } from "date-fns";
 import Image from "next/image";
 
 export default function Home() {
   const date = new Date();
 
-  const currentDay = date.getDate();
-  const currentMonth = date.getMonth() + 1;
-  const currentYear = date.getFullYear();
+  const currentDay = date.getUTCDate();
+  const currentMonth = date.getUTCMonth() + 1;
+  const currentYear = date.getUTCFullYear();
 
   const [isDay, setDay] = useState();
   const [isMonth, setMonth] = useState();
@@ -41,11 +41,7 @@ export default function Home() {
   });
 
   function formatDateValue(value) {
-    if (!value) {
-      return "--";
-    } else {
-      return value;
-    }
+    return !value ? "--" : value;
   }
 
   function Form() {
@@ -92,7 +88,6 @@ export default function Home() {
               {...register("day", {
                 required: true,
                 valueAsNumber: true,
-                pattern: /^(3[01]|[12][0-9]|0?[1-9])+$/,
                 validate: {
                   minValue: (value) => value >= 1,
                   maxValue: (value) => value <= 31,
@@ -116,7 +111,7 @@ export default function Home() {
                 Must be a valid day
               </span>
             )}
-            {errors.day?.type === "matchPattern" && (
+            {errors.day?.type === "validate" && (
               <span role="alert" className="text-lightRed text-xs italic mt-1">
                 Must be a number
               </span>
@@ -172,7 +167,7 @@ export default function Home() {
                 Must be a valid month
               </span>
             )}
-            {errors.month?.type === "matchPattern" && (
+            {errors.month?.type === "validate" && (
               <span role="alert" className="text-lightRed text-xs italic mt-1">
                 Must be a valid month
               </span>
@@ -222,7 +217,7 @@ export default function Home() {
                 Must be in the past
               </span>
             )}
-            {errors.year?.type === "matchPattern" && (
+            {errors.year?.type === "validate" && (
               <span role="alert" className="text-lightRed text-xs italic mt-1">
                 Must be a valid year
               </span>
