@@ -8,8 +8,9 @@
  * @link https://www.freecodecamp.org/news/how-to-build-forms-in-react/
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { parse, isValid, intervalToDuration } from "date-fns";
 import Image from "next/image";
 
 export default function Home() {
@@ -19,11 +20,33 @@ export default function Home() {
   const currentMonth = date.getMonth() + 1;
   const currentYear = date.getFullYear();
 
-  const currentFullDate = `${currentDay}-${currentMonth}-${currentYear}`;
-
   const [isDay, setDay] = useState();
   const [isMonth, setMonth] = useState();
   const [isYear, setYear] = useState();
+
+  const compareCurrentDate = date;
+  let compareSubmittedDate = new Date(
+    currentYear,
+    currentMonth - 1,
+    currentDay
+  );
+
+  if (isYear && isMonth && isDay) {
+    compareSubmittedDate = new Date(isYear, isMonth - 1, isDay);
+  }
+
+  const dateDuration = intervalToDuration({
+    start: compareCurrentDate,
+    end: compareSubmittedDate,
+  });
+
+  function formatDateValue(value) {
+    if (!value) {
+      return "--";
+    } else {
+      return value;
+    }
+  }
 
   function Form() {
     const {
@@ -60,6 +83,8 @@ export default function Home() {
                   ? "text-lightRed border-lightRed hover:border-lightRed focus:border-lightRed"
                   : "border-lightGrey hover:border-purple focus:border-purple"
               }`}
+              defaultValue={isDay}
+              onChange={(e) => setDay(e.target.value)}
               placeholder="DD"
               inputMode="numeric"
               maxLength={2}
@@ -71,7 +96,8 @@ export default function Home() {
                 validate: {
                   minValue: (value) => value >= 1,
                   maxValue: (value) => value <= 31,
-                  matchPattern: (value) => /^(3[01]|[12][0-9]|0?[1-9])+$/.test(value),
+                  matchPattern: (value) =>
+                    /^(3[01]|[12][0-9]|0?[1-9])+$/.test(value),
                 },
               })}
             />
@@ -114,6 +140,8 @@ export default function Home() {
                   ? "text-lightRed border-lightRed hover:border-lightRed focus:border-lightRed"
                   : "border-lightGrey hover:border-purple focus:border-purple"
               }`}
+              defaultValue={isMonth}
+              onChange={(e) => setMonth(e.target.value)}
               placeholder="MM"
               inputMode="numeric"
               maxLength={2}
@@ -168,6 +196,8 @@ export default function Home() {
                   ? "text-lightRed border-lightRed hover:border-lightRed focus:border-lightRed"
                   : "border-lightGrey hover:border-purple focus:border-purple"
               }`}
+              defaultValue={isYear}
+              onChange={(e) => setYear(e.target.value)}
               placeholder="YYYY"
               inputMode="numeric"
               maxLength={4}
@@ -199,11 +229,11 @@ export default function Home() {
             )}
           </div>
         </div>
-        <div className="relative my-16 md:my-20">
+        <div className="relative my-16 md:my-10">
           <hr className="border-t-2 border-lightGrey" aria-hidden={true} />
           <button
             type="submit"
-            className="absolute top-0 -translate-y-[50%] left-0 right-0 md:left-auto mx-auto w-16 md:w-20 h-16 md:h-20 rounded-full bg-purple hover:bg-offBlack focus:bg-offBlack transition duration-200 ease-in-out text-center"
+            className="absolute top-0 -translate-y-[50%] left-0 right-0 md:left-auto mx-auto w-16 md:w-20 h-16 md:h-20 p-4 md:p-2 rounded-full bg-purple hover:bg-offBlack focus:bg-offBlack transition duration-200 ease-in-out text-center"
           >
             <Image
               src="/icon-arrow.svg"
@@ -228,17 +258,26 @@ export default function Home() {
         aria-label="Content"
         aria-live="polite"
       >
-        <div className="w-full md:max-w-[700px] bg-white p-6 md:p-12 rounded-3xl rounded-br-[4.5rem] md:rounded-br-[9rem]">
+        <div className="w-full md:max-w-[700px] bg-white p-6 md:p-12 rounded-3xl rounded-br-[6rem] md:rounded-br-[9rem]">
           <Form />
-          <ul className="list-none font-extrabold italic text-5xl md:text-7xl">
+          <ul className="list-none font-extrabold !leading-[1.2em] italic text-5xl md:text-7xl">
             <li>
-              <span className="text-purple">--</span> years
+              <span className="text-purple">
+                {formatDateValue(dateDuration.years)}
+              </span>{" "}
+              years
             </li>
             <li>
-              <span className="text-purple">--</span> months
+              <span className="text-purple">
+                {formatDateValue(dateDuration.months)}
+              </span>{" "}
+              months
             </li>
             <li>
-              <span className="text-purple">--</span> days
+              <span className="text-purple">
+                {formatDateValue(dateDuration.days)}
+              </span>{" "}
+              days
             </li>
           </ul>
         </div>
